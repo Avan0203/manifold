@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 
 import type { ManifoldToplevel } from 'manifold-3d';
 import type { SceneApp } from './core/SceneApp';

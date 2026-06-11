@@ -1,3 +1,11 @@
+/*
+ * @Author: wuyifan wuyifan@udschina.com
+ * @Date: 2026-06-10 10:26:04
+ * @LastEditors: wuyifan wuyifan@udschina.com
+ * @LastEditTime: 2026-06-11 14:54:59
+ * @FilePath: \manifold\src\cases\index.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 /**
  * 案例集中式注册中心。
  *
@@ -46,4 +54,10 @@ registerCase({
   name: '平滑 / Smooth',
   description: 'Manifold.smooth 构造切线 + refine 插值得到 G1 连续曲面，可选择保留硬边',
   load: () => import('./smooth').then((m) => m.default),
+});
+registerCase({
+  key: 'import-export',
+  name: '导入导出',
+  description: 'Manifold 模型 gltf / glb / 3mf 导入导出',
+  load: () => import('./import-export').then((m) => m.default),
 });

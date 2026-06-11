@@ -5,6 +5,7 @@ import { manifoldMesh2geometry } from '../../utils/manifold';
 import type { Case } from '../../core/types';
 import { ManifoldToplevel } from 'manifold-3d/manifold.js';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
+import xPng from '../../assets/x.png';
 
 
 let cleanup: (() => void) | null = null;
@@ -30,7 +31,7 @@ const caseDef: Case = {
     dirLight.position.set(5, 5, 5);
     scene.add(dirLight);
 
-    const texture = getTexture('/x.png');
+    const texture = getTexture(xPng);
 
     // 通过 Manifold 构造 5 个内置基本图形
     const M = wasm.Manifold;
