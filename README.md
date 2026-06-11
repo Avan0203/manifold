@@ -38,8 +38,6 @@ A curated set of interactive cases demonstrating core **Manifold-3d** operations
 
 ## 📸 Screenshots
 
-> Place screenshots under `docs/screenshots/` using the same `<case-key>` as in `src/cases/index.ts`.
-
 <div align="center">
   <img src="docs/index.png" alt="Hero screenshot" width="80%" />
 </div>

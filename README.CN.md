@@ -38,8 +38,6 @@
 
 ## 📸 截图
 
-> 截图请放到 `docs/screenshots/` 目录下，文件名与 `src/cases/index.ts` 中的 `<case-key>` 一一对应。
-
 <div align="center">
   <img src="docs/index.png" alt="主截图" width="80%" />
 </div>
