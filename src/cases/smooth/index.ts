@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import GUI from 'lil-gui';
-import { createRenderer, createCamera, disposeObject } from '../../utils/three';
+import { createCamera, disposeObject } from '../../utils/three';
 import { manifoldMesh2geometry } from '../../utils/manifold';
-import type { Case } from '../../core/types';
+import type { Case, CaseContext } from '../../core/types';
 import type { ManifoldToplevel, Manifold, Mesh, Smoothness } from 'manifold-3d';
 
 let cleanup: (() => void) | null = null;
@@ -123,13 +123,15 @@ const findLockableHalfedges = (mesh: Mesh, shape: ShapeKind): Smoothness[] => {
 const caseDef: Case = {
   name: '平滑 / Smooth',
   description: 'Manifold.smooth 构造切线 + refine 插值得到 G1 连续曲面，可选择保留硬边',
-  mount(container: HTMLElement, wasm: ManifoldToplevel) {
+  mount(ctx: CaseContext) {
+    const { container, renderer, wasm } = ctx;
+    renderer.setSize(container.clientWidth, container.clientHeight);
+
     const scene = new THREE.Scene();
     const camera = createCamera(container.clientWidth / container.clientHeight);
     camera.position.set(1.6, 1.4, 2.4);
     camera.lookAt(0, 0, 0);
 
-    const renderer = createRenderer(container);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -256,10 +258,7 @@ const caseDef: Case = {
         (currentMesh.material as THREE.Material).dispose();
       }
       disposeObject(scene);
-      renderer.dispose();
-      if (renderer.domElement.parentNode === container) {
-        container.removeChild(renderer.domElement);
-      }
+      // renderer 与 canvas 由 Stage 永久持有，不要 dispose / removeChild
     };
   },
   unmount() {

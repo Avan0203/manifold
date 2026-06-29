@@ -32,7 +32,8 @@ A curated set of interactive cases demonstrating core **Manifold-3d** operations
 | 4 | **2D Boolean** | `CrossSection` union / intersection / difference (line-rendered) |
 | 5 | **3D Boolean** | `Manifold` union / intersection / difference on solid meshes |
 | 6 | **Smooth** | `Manifold.smooth` + `refine` for G1-continuous surfaces with optional hard edges |
-| 7 | **Import / Export** | Round-trip models through `gltf` / `glb` / `3mf` via `@gltf-transform` |
+| 7 | **Simplify** | `asOriginal` + `Manifold.simplify` tolerance-based mesh simplification on refined models |
+| 8 | **Import / Export** | Round-trip models through `gltf` / `glb` / `3mf` via `@gltf-transform` |
 
 ---
 

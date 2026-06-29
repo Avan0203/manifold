@@ -56,6 +56,18 @@ registerCase({
   load: () => import('./smooth').then((m) => m.default),
 });
 registerCase({
+  key: 'refine',
+  name: '细分 / Refine',
+  description: 'Manifold refine / refineToLength / refineToTolerance 三种细分方法',
+  load: () => import('./refine').then((m) => m.default),
+});
+registerCase({
+  key: 'simplify',
+  name: '简化 / Simplify',
+  description: 'asOriginal + simplify 对已细分模型做容差简化',
+  load: () => import('./simplify').then((m) => m.default),
+});
+registerCase({
   key: 'import-export',
   name: '导入导出',
   description: 'Manifold 模型 gltf / glb / 3mf 导入导出',

@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import GUI from 'lil-gui';
-import { createRenderer, createCamera, disposeObject } from '../../utils/three';
-import type { Case } from '../../core/types';
-import type { ManifoldToplevel, Manifold, Mesh as ManifoldMesh } from 'manifold-3d';
+import { createCamera, disposeObject } from '../../utils/three';
+import type { Case, CaseContext } from '../../core/types';
+import type { Manifold, Mesh as ManifoldMesh } from 'manifold-3d';
 
 let cleanup: (() => void) | null = null;
 
@@ -15,13 +15,15 @@ const COLOR_B = 0x4488ff;
 const caseDef: Case = {
   name: '3D 布尔',
   description: 'Manifold 交并差补',
-  mount(container: HTMLElement, wasm: ManifoldToplevel) {
+  mount(ctx: CaseContext) {
+    const { container, renderer, wasm } = ctx;
+    renderer.setSize(container.clientWidth, container.clientHeight);
+
     const scene = new THREE.Scene();
     const camera = createCamera(container.clientWidth / container.clientHeight);
     camera.position.set(3, 3, 5);
     camera.lookAt(0, 0, 0);
 
-    const renderer = createRenderer(container);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -270,16 +272,13 @@ const caseDef: Case = {
         resultMan = null;
       }
       disposeObject(scene);
-      renderer.dispose();
       matA.dispose();
       matB.dispose();
       aMan.delete();
       bMan.delete();
       bbox.delete();
       if (note.parentNode === container) container.removeChild(note);
-      if (renderer.domElement.parentNode === container) {
-        container.removeChild(renderer.domElement);
-      }
+      // renderer 与 canvas 由 Stage 永久持有，不要 dispose / removeChild
     };
   },
   unmount() {

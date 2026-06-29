@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import GUI from 'lil-gui';
-import { createRenderer, createCamera, disposeObject } from '../../utils/three';
-import type { Case } from '../../core/types';
-import type { ManifoldToplevel, CrossSection } from 'manifold-3d';
+import { createCamera, disposeObject } from '../../utils/three';
+import type { Case, CaseContext } from '../../core/types';
+import type { CrossSection } from 'manifold-3d';
 
 let cleanup: (() => void) | null = null;
 
@@ -15,14 +15,16 @@ const COLOR_RESULT = 0x8844ff;
 const caseDef: Case = {
   name: '2D 布尔',
   description: 'CrossSection 交并差补（线渲染）',
-  mount(container: HTMLElement, wasm: ManifoldToplevel) {
+  mount(ctx: CaseContext) {
+    const { container, renderer, wasm } = ctx;
+    renderer.setSize(container.clientWidth, container.clientHeight);
+
     const scene = new THREE.Scene();
     const camera = createCamera(container.clientWidth / container.clientHeight);
     // 顶视：从 +Z 看向原点，y 在屏幕上向上
     camera.position.set(0, 0, 6);
     camera.lookAt(0, 0, 0);
 
-    const renderer = createRenderer(container);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableRotate = false; // 2D 不旋转
     controls.enablePan = true;
@@ -240,7 +242,6 @@ const caseDef: Case = {
         resultCS = null;
       }
       disposeObject(scene); // 场景内无 mesh，noop
-      renderer.dispose();
       aCS.delete();
       bCS.delete();
       bbox.delete();
@@ -248,9 +249,7 @@ const caseDef: Case = {
       matB.dispose();
       matResult.dispose();
       if (note.parentNode === container) container.removeChild(note);
-      if (renderer.domElement.parentNode === container) {
-        container.removeChild(renderer.domElement);
-      }
+      // renderer 与 canvas 由 Stage 永久持有，不要 dispose / removeChild
     };
   },
   unmount() {

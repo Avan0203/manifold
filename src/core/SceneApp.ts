@@ -32,7 +32,11 @@ export class SceneApp {
     this.root = root;
     this.sidebar = new Sidebar((key) => this.handleSelect(key));
     this.stage = new Stage();
-    this.caseManager = new CaseManager(this.stage.getElement(), this.wasm);
+    this.caseManager = new CaseManager(
+      this.stage.getElement(),
+      this.stage.getRenderer(),
+      this.wasm
+    );
 
     window.addEventListener('hashchange', () => this.onHashChange());
   }

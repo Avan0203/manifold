@@ -1,26 +1,23 @@
 import * as THREE from 'three';
-import { GUI } from 'lil-gui';
-import { createRenderer, createCamera, disposeObject, getTexture } from '../../utils/three';
-import { manifoldMesh2geometry } from '../../utils/manifold';
-import type { Case } from '../../core/types';
-import { ManifoldToplevel } from 'manifold-3d/manifold.js';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
+import GUI from 'lil-gui';
+import { createCamera, disposeObject, getTexture } from '../../utils/three';
+import { manifoldMesh2geometry } from '../../utils/manifold';
+import type { Case, CaseContext } from '../../core/types';
 import xPng from '../../assets/x.png';
-
 
 let cleanup: (() => void) | null = null;
 
 const caseDef: Case = {
   name: '基础几何体',
   description: 'Manifold 内置基本图形',
-  mount(container: HTMLElement, wasm: ManifoldToplevel) {
+  mount(ctx: CaseContext) {
+    const { container, renderer, wasm } = ctx;
+    renderer.setSize(container.clientWidth, container.clientHeight);
+
     const scene = new THREE.Scene();
     const camera = createCamera(container.clientWidth / container.clientHeight);
     camera.position.z = 7;
-
-
-
-    const renderer = createRenderer(container);
 
     const controls = new OrbitControls(camera, renderer.domElement);
 
@@ -114,12 +111,10 @@ const caseDef: Case = {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', onResize);
       gui.destroy();
+      controls.dispose();
       disposeObject(scene);
-      renderer.dispose();
       manifolds.forEach((m) => m.delete());
-      if (renderer.domElement.parentNode === container) {
-        container.removeChild(renderer.domElement);
-      }
+      // renderer 与 canvas 由 Stage 永久持有，不要 dispose / removeChild
     };
   },
   unmount() {

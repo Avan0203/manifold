@@ -32,7 +32,8 @@
 | 4 | **2D 布尔** | `CrossSection` 交 / 并 / 差（线框模式渲染） |
 | 5 | **3D 布尔** | `Manifold` 交 / 并 / 差，对实体网格运算 |
 | 6 | **平滑 Smooth** | `Manifold.smooth` + `refine` 构造 G1 连续曲面，可选保留硬边 |
-| 7 | **导入导出** | 通过 `@gltf-transform` 进行 `gltf` / `glb` / `3mf` 的双向转换 |
+| 7 | **简化 Simplify** | `asOriginal` + `Manifold.simplify` 对已细分模型做容差简化 |
+| 8 | **导入导出** | 通过 `@gltf-transform` 进行 `gltf` / `glb` / `3mf` 的双向转换 |
 
 ---
 

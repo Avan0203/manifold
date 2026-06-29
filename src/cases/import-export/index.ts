@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import GUI from 'lil-gui';
-import { createRenderer, createCamera, disposeObject } from '../../utils/three';
+import { createCamera, disposeObject } from '../../utils/three';
 import { manifoldMesh2geometry } from '../../utils/manifold';
-import type { Case } from '../../core/types';
-import type { ManifoldToplevel, Manifold } from 'manifold-3d';
+import type { Case, CaseContext } from '../../core/types';
+import type { Manifold } from 'manifold-3d';
 // manifoldCAD 的 high-level API：内部 importManifold
 import { importManifold } from 'manifold-3d/manifoldCAD';
 // @gltf-transform/core：用于把 JSON 格式 .gltf 转成 GLB 再走 manifold 的二进制 importer
@@ -66,10 +66,12 @@ const buildDefaultManifold = (M: typeof window.wasm.Manifold): Manifold => {
 const caseDef: Case = {
   name: '导入导出',
   description: 'Manifold 模型 gltf / glb / 3mf 导入导出',
-  mount(container: HTMLElement, wasm: ManifoldToplevel) {
+  mount(ctx: CaseContext) {
+    const { container, renderer, wasm } = ctx;
+    renderer.setSize(container.clientWidth, container.clientHeight);
+
     const scene = new THREE.Scene();
     const camera = createCamera(container.clientWidth / container.clientHeight);
-    const renderer = createRenderer(container);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -250,11 +252,8 @@ const caseDef: Case = {
         (currentMesh.material as THREE.Material).dispose();
       }
       disposeObject(scene);
-      renderer.dispose();
       if (fileInput.parentNode) fileInput.parentNode.removeChild(fileInput);
-      if (renderer.domElement.parentNode === container) {
-        container.removeChild(renderer.domElement);
-      }
+      // renderer 与 canvas 由 Stage 永久持有，不要 dispose / removeChild
     };
   },
   unmount() {

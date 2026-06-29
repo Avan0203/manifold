@@ -1,25 +1,4 @@
-/*
- * @Author: wuyifan wuyifan@udschina.com
- * @Date: 2026-06-10 10:25:54
- * @LastEditors: wuyifan wuyifan@udschina.com
- * @LastEditTime: 2026-06-10 13:36:31
- * @FilePath: \manifold\src\utils\three.ts
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 import * as THREE from 'three';
-
-/**
- * 创建标准 WebGLRenderer 并附加到容器。
- * 默认开启 antialias、自适应设备像素比、深色背景。
- */
-export function createRenderer(container: HTMLElement): THREE.WebGLRenderer {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setClearColor(0x1a1a1a, 1.0);  
-  container.appendChild(renderer.domElement);
-  return renderer;
-}
 
 /**
  * 创建标准透视相机（fov=75, near=0.1, far=1000）。

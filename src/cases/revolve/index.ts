@@ -1,23 +1,25 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import GUI from 'lil-gui';
-import { createRenderer, createCamera, disposeObject } from '../../utils/three';
+import { createCamera, disposeObject } from '../../utils/three';
 import { manifoldMesh2geometry } from '../../utils/manifold';
-import type { Case } from '../../core/types';
-import type { ManifoldToplevel, Manifold, Vec2 } from 'manifold-3d';
+import type { Case, CaseContext } from '../../core/types';
+import type { Manifold, Vec2 } from 'manifold-3d';
 
 let cleanup: (() => void) | null = null;
 
 const caseDef: Case = {
   name: '车削 / Revolve',
   description: '2D 截面绕 Y 轴旋转生成 3D 实体',
-  mount(container: HTMLElement, wasm: ManifoldToplevel) {
+  mount(ctx: CaseContext) {
+    const { container, renderer, wasm } = ctx;
+    renderer.setSize(container.clientWidth, container.clientHeight);
+
     const scene = new THREE.Scene();
     const camera = createCamera(container.clientWidth / container.clientHeight);
     camera.position.set(0, 1, 14);
     camera.lookAt(0, 0.75, 0);
 
-    const renderer = createRenderer(container);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -159,11 +161,8 @@ const caseDef: Case = {
       gui.destroy();
       controls.dispose();
       disposeObject(scene);
-      renderer.dispose();
       manifolds.forEach((m) => m.delete());
-      if (renderer.domElement.parentNode === container) {
-        container.removeChild(renderer.domElement);
-      }
+      // renderer 与 canvas 由 Stage 永久持有，不要 dispose / removeChild
     };
   },
   unmount() {
